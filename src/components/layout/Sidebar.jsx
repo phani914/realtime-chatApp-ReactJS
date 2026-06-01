@@ -20,6 +20,40 @@ const shortcuts = [
   { label: 'Archived', icon: Archive },
 ];
 
+const activeUsers = [
+  {
+    name: 'Maya Chen',
+    role: 'Product lead',
+    initials: 'MC',
+    status: 'online',
+    activity: 'Active now',
+    unread: 2,
+  },
+  {
+    name: 'Arjun Rao',
+    role: 'Frontend',
+    initials: 'AR',
+    status: 'online',
+    activity: 'Active now',
+  },
+  {
+    name: 'Nina Patel',
+    role: 'Design',
+    initials: 'NP',
+    status: 'away',
+    activity: 'Away 8m',
+  },
+  {
+    name: 'Leo Grant',
+    role: 'Backend',
+    initials: 'LG',
+    status: 'offline',
+    activity: 'Offline',
+  },
+];
+
+const onlineUserCount = activeUsers.filter((user) => user.status === 'online').length;
+
 function SidebarSection({ title, items }) {
   return (
     <section className="sidebar-section" aria-label={title}>
@@ -53,10 +87,40 @@ function SidebarSection({ title, items }) {
   );
 }
 
+function UserList() {
+  return (
+    <section className="sidebar-section user-list-section" aria-label="Active users">
+      <div className="sidebar-section-header">
+        <h2>Active users</h2>
+        <span className="user-list-total">{onlineUserCount} online</span>
+      </div>
+
+      <div className="user-list">
+        {activeUsers.map((user) => (
+          <button className="user-list-item" type="button" key={user.name}>
+            <span className={`user-avatar ${user.status}`} aria-hidden="true">
+              {user.initials}
+            </span>
+            <span className="user-details">
+              <span className="user-name-row">
+                <span className="user-name">{user.name}</span>
+                <span className={`user-status-label ${user.status}`}>{user.status}</span>
+              </span>
+              <span className="user-role">{user.role} · {user.activity}</span>
+            </span>
+            {user.unread ? <span className="sidebar-count">{user.unread}</span> : null}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function Sidebar() {
   return (
     <aside className="sidebar" aria-label="Chat sidebar">
       <SidebarSection title="Messages" items={spaces} />
+      <UserList />
       <SidebarSection title="Shortcuts" items={shortcuts} />
     </aside>
   );
