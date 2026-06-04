@@ -17,14 +17,40 @@ const incomingMessages = [
   },
 ];
 
-function createIncomingMessage(messageSeed) {
+const roomReplies = {
+  pulse: incomingMessages,
+  design: [
+    {
+      author: 'Nina',
+      text: 'That direction works. I added a note for the review pass.',
+    },
+    {
+      author: 'Maya',
+      text: 'The interaction states are easier to scan now.',
+    },
+  ],
+  support: [
+    {
+      author: 'Leo',
+      text: 'I checked the incident queue. The live update is coming through.',
+    },
+    {
+      author: 'Maya',
+      text: 'Support can see the latest customer context now.',
+    },
+  ],
+};
+
+function createIncomingMessage(messageSeed, roomId) {
   return {
-    id: `received-${Date.now()}`,
+    id: `${roomId}-received-${Date.now()}`,
     author: messageSeed.author,
     text: messageSeed.text,
+    roomId,
     isOwn: false,
     status: 'delivered',
     sentAt: new Date().toISOString(),
+    reactions: {},
   };
 }
 
@@ -33,26 +59,28 @@ export function createSocketClient() {
   const typingListeners = new Set();
   const timers = new Set();
   let isConnected = false;
-  let replyIndex = 0;
+  const replyIndexes = new Map();
 
   function notifyMessages(message) {
     messageListeners.forEach((listener) => listener(message));
   }
 
-  function notifyTyping(isTyping, author = 'Maya') {
-    typingListeners.forEach((listener) => listener({ author, isTyping }));
+  function notifyTyping(isTyping, author = 'Maya', roomId = 'pulse') {
+    typingListeners.forEach((listener) => listener({ author, isTyping, roomId }));
   }
 
-  function queueIncomingMessage(delay = 1200) {
-    notifyTyping(true);
+  function queueIncomingMessage(roomId = 'pulse', delay = 1200) {
+    const replies = roomReplies[roomId] ?? incomingMessages;
+    const replyIndex = replyIndexes.get(roomId) ?? 0;
+    const messageSeed = replies[replyIndex % replies.length];
+
+    notifyTyping(true, messageSeed.author, roomId);
 
     const timer = window.setTimeout(() => {
-      const messageSeed = incomingMessages[replyIndex % incomingMessages.length];
-
-      replyIndex += 1;
+      replyIndexes.set(roomId, replyIndex + 1);
       timers.delete(timer);
-      notifyTyping(false, messageSeed.author);
-      notifyMessages(createIncomingMessage(messageSeed));
+      notifyTyping(false, messageSeed.author, roomId);
+      notifyMessages(createIncomingMessage(messageSeed, roomId));
     }, delay);
 
     timers.add(timer);
@@ -78,19 +106,19 @@ export function createSocketClient() {
 
       return () => typingListeners.delete(listener);
     },
-    receiveMessage() {
+    receiveMessage(roomId) {
       if (!isConnected) {
         return;
       }
 
-      queueIncomingMessage(450);
+      queueIncomingMessage(roomId, 450);
     },
-    sendMessage() {
+    sendMessage(message) {
       if (!isConnected) {
         return;
       }
 
-      queueIncomingMessage();
+      queueIncomingMessage(message.roomId);
     },
   };
 }

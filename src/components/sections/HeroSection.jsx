@@ -1,5 +1,11 @@
-import { MessageSquarePlus, Radio } from 'lucide-react';
+import { Activity, MessageSquarePlus, Radio, ShieldCheck, Users } from 'lucide-react';
 import heroImage from '../../assets/chat-hero-bg.png';
+
+const heroStats = [
+  { label: 'Active users', value: '128', icon: Users },
+  { label: 'Live rooms', value: '24', icon: Activity },
+  { label: 'Delivery', value: '99%', icon: ShieldCheck },
+];
 
 export function HeroSection() {
   return (
@@ -26,6 +32,20 @@ export function HeroSection() {
             View groups
           </a>
         </div>
+      </div>
+
+      <div className="hero-live-panel" aria-label="Live workspace summary">
+        {heroStats.map((stat) => {
+          const Icon = stat.icon;
+
+          return (
+            <div className="hero-stat" key={stat.label}>
+              <Icon size={17} aria-hidden="true" />
+              <span>{stat.label}</span>
+              <strong>{stat.value}</strong>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

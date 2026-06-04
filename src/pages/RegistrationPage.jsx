@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { LockKeyhole, Mail, MessageCircle, ShieldCheck, UserRound } from 'lucide-react';
+import { House, LockKeyhole, Mail, MessageCircle, ShieldCheck, UserRound } from 'lucide-react';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
-export function RegistrationPage({ onRegister, onShowLogin }) {
+export function RegistrationPage({ onRegister, onShowHome, onShowLogin }) {
   const [values, setValues] = useState({
     name: '',
     email: '',
@@ -72,15 +72,21 @@ export function RegistrationPage({ onRegister, onShowLogin }) {
     <main className="login-page">
       <section className="login-hero" aria-labelledby="registration-title">
         <div className="login-panel">
-          <a className="login-brand" href="/" aria-label="Realtime Chat home">
-            <span className="brand-mark" aria-hidden="true">
-              <MessageCircle size={22} />
-            </span>
-            <span>
-              <span className="navbar-title">Realtime Chat</span>
-              <span className="navbar-subtitle">Create your workspace access</span>
-            </span>
-          </a>
+          <div className="auth-page-header">
+            <button className="login-brand" type="button" onClick={onShowHome}>
+              <span className="brand-mark" aria-hidden="true">
+                <MessageCircle size={22} />
+              </span>
+              <span>
+                <span className="navbar-title">Realtime Chat</span>
+                <span className="navbar-subtitle">Create your workspace access</span>
+              </span>
+            </button>
+            <button className="auth-home-button" type="button" onClick={onShowHome}>
+              <House size={16} />
+              Home
+            </button>
+          </div>
 
           <div className="login-copy">
             <span className="login-kicker">

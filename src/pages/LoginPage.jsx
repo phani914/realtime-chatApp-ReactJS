@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { LockKeyhole, Mail, MessageCircle, ShieldCheck } from 'lucide-react';
+import { House, LockKeyhole, Mail, MessageCircle, ShieldCheck } from 'lucide-react';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function LoginPage({ onLogin, onShowRegistration }) {
+export function LoginPage({ onLogin, onShowHome, onShowRegistration }) {
   const [values, setValues] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
 
@@ -49,15 +49,21 @@ export function LoginPage({ onLogin, onShowRegistration }) {
     <main className="login-page">
       <section className="login-hero" aria-labelledby="login-title">
         <div className="login-panel">
-          <a className="login-brand" href="/" aria-label="Realtime Chat home">
-            <span className="brand-mark" aria-hidden="true">
-              <MessageCircle size={22} />
-            </span>
-            <span>
-              <span className="navbar-title">Realtime Chat</span>
-              <span className="navbar-subtitle">Secure team messaging</span>
-            </span>
-          </a>
+          <div className="auth-page-header">
+            <button className="login-brand" type="button" onClick={onShowHome}>
+              <span className="brand-mark" aria-hidden="true">
+                <MessageCircle size={22} />
+              </span>
+              <span>
+                <span className="navbar-title">Realtime Chat</span>
+                <span className="navbar-subtitle">Secure team messaging</span>
+              </span>
+            </button>
+            <button className="auth-home-button" type="button" onClick={onShowHome}>
+              <House size={16} />
+              Home
+            </button>
+          </div>
 
           <div className="login-copy">
             <span className="login-kicker">
