@@ -27,10 +27,15 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
+  overflow-x: hidden;
   background:
     linear-gradient(135deg, rgb(255 255 255 / 92%) 0 24%, transparent 24% 100%),
     linear-gradient(155deg, transparent 0 58%, rgb(255 240 235 / 74%) 58% 72%, transparent 72% 100%),
@@ -538,6 +543,7 @@ a {
 
 .navbar-actions {
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 8px;
 }
@@ -1530,6 +1536,7 @@ a {
 }
 
 .message-bubble p {
+  overflow-wrap: anywhere;
   margin: 0;
   line-height: 1.5;
 }
@@ -1915,12 +1922,17 @@ a {
 
 @media (max-width: 640px) {
   .login-page {
-    padding: 16px;
+    align-items: start;
+    padding: 12px;
+  }
+
+  .login-hero {
+    width: 100%;
   }
 
   .login-panel {
     gap: 24px;
-    padding: 24px;
+    padding: 22px;
   }
 
   .auth-page-header {
@@ -1943,8 +1955,8 @@ a {
   }
 
   .app-shell {
-    width: min(100% - 18px, 960px);
-    padding: 16px 0;
+    width: min(100% - 12px, 960px);
+    padding: 10px 0;
   }
 
   .navbar {
@@ -1977,24 +1989,38 @@ a {
     width: 100%;
     order: 3;
     overflow-x: auto;
-    padding-bottom: 2px;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
   }
 
   .navbar-links a,
   .navbar-home-link {
     flex: 0 0 auto;
     padding: 8px 10px;
+    scroll-snap-align: start;
+    white-space: nowrap;
   }
 
   .navbar-actions {
-    width: 100%;
-    justify-content: space-between;
+    width: calc(100% + 4px);
+    justify-content: flex-start;
     margin-left: 0;
     order: 2;
+    overflow-x: auto;
+    padding: 2px 2px 4px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
   }
 
   .navbar-actions button {
+    flex: 0 0 auto;
     width: 40px;
+    height: 40px;
+    scroll-snap-align: start;
+  }
+
+  .navbar-actions .navbar-auth-button {
     height: 40px;
   }
 
@@ -2074,7 +2100,51 @@ a {
   }
 
   .chat-window {
-    min-height: 520px;
+    min-height: min(720px, calc(100vh - 20px));
+  }
+
+  .room-switcher,
+  .presence-summary,
+  .quick-replies,
+  .sidebar-list,
+  .user-list {
+    scrollbar-width: none;
+  }
+
+  .room-switcher::-webkit-scrollbar,
+  .presence-summary::-webkit-scrollbar,
+  .quick-replies::-webkit-scrollbar,
+  .sidebar-list::-webkit-scrollbar,
+  .user-list::-webkit-scrollbar,
+  .navbar-links::-webkit-scrollbar,
+  .navbar-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chat-room-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chat-room-title {
+    width: 100%;
+  }
+
+  .chat-room-actions {
+    width: 100%;
+  }
+
+  .chat-room-actions button {
+    flex: 1 1 0;
+  }
+
+  .presence-summary {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .presence-chip {
+    flex: 0 0 auto;
   }
 
   .room-context-grid {
@@ -2091,7 +2161,8 @@ a {
   }
 
   .message-list {
-    padding: 16px;
+    min-height: 360px;
+    padding: 14px;
   }
 
   .chat-search-bar {
@@ -2104,7 +2175,7 @@ a {
   }
 
   .message-bubble {
-    max-width: 88%;
+    max-width: 92%;
   }
 
   .message-footer {
@@ -2115,13 +2186,26 @@ a {
 
   .message-composer {
     padding: 12px;
+    grid-template-columns: 40px minmax(0, 1fr) 40px 40px;
   }
 }
 
 @media (max-width: 420px) {
+  .login-page {
+    padding: 8px;
+  }
+
+  .login-panel {
+    padding: 18px;
+  }
+
+  .auth-home-button {
+    width: 100%;
+  }
+
   .hero-section {
     min-height: 320px;
-    padding: 20px;
+    padding: 18px;
   }
 
   .hero-content h1 {
@@ -2134,7 +2218,14 @@ a {
   }
 
   .message-bubble {
-    max-width: 94%;
+    max-width: 96%;
+    padding: 12px;
+  }
+
+  .message-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .room-switcher,
@@ -2145,7 +2236,7 @@ a {
   }
 
   .chat-room-header {
-    align-items: flex-start;
+    padding: 14px 12px;
   }
 
   .chat-avatar {
@@ -2154,21 +2245,54 @@ a {
   }
 
   .chat-room-actions {
-    gap: 6px;
+    gap: 8px;
   }
 
   .chat-room-actions button {
-    width: 36px;
+    width: auto;
     height: 36px;
   }
 
+  .chat-search-bar {
+    padding: 12px;
+  }
+
   .message-composer {
-    grid-template-columns: 40px minmax(0, 1fr) 40px 40px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .message-composer input {
+    grid-column: 1 / -1;
+    min-height: 42px;
   }
 
   .composer-tool,
   .composer-send {
-    width: 40px;
     height: 40px;
+    justify-self: stretch;
+    width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .navbar-brand > span:last-child {
+    min-width: 0;
+  }
+
+  .navbar-title,
+  .navbar-subtitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hero-live-panel {
+    display: none;
+  }
+
+  .chat-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.78rem;
   }
 }
